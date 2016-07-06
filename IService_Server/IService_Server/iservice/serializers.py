@@ -1,3 +1,7 @@
+from collections import OrderedDict
+
+from rest_framework.fields import SkipField
+
 from models import IserviceUser
 from rest_framework import serializers
 
@@ -15,3 +19,11 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         Creates a new model on database from validated data.
         """
         return IserviceUser.create_user(**validated_data)
+
+    def to_representation(self, instance):
+        return {
+            'name': instance.name,
+            'email': instance.email,
+            'phone': str(instance.phone),
+            'picture': instance.picture
+        }
