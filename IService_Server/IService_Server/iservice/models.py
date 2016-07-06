@@ -22,11 +22,16 @@ class IserviceUser(User):
         :return: User instance.
         """
         user = IserviceUser()
-        user.name = kwargs['name']
-        user.email = kwargs['email']
-        user.phone = kwargs['phone']
-        user.picture = kwargs['picture']
-        user.set_password(kwargs['password'])
-        user.username = user.email
+        if 'name' in kwargs:
+            user.name = kwargs['name']
+        if 'email' in kwargs:
+            user.email = kwargs['email']
+            user.username = user.email
+        if 'phone' in kwargs:
+            user.phone = kwargs['phone']
+        if 'picture' in kwargs:
+            user.picture = kwargs['picture']
+        if 'password' in kwargs:
+            user.set_password(kwargs['password'])
         user.save()
         return user
