@@ -1,6 +1,8 @@
 from copy import copy
 
 from rest_framework import status
+from rest_framework.decorators import api_view, renderer_classes
+from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
@@ -8,7 +10,6 @@ from rest_framework_jwt.views import ObtainJSONWebToken
 from IService_Server.iservice.models import IserviceUser, Service, City, State
 from IService_Server.iservice.serializers import UserSerializer, ServiceSerializer
 from rest_framework.permissions import BasePermission, IsAuthenticatedOrReadOnly
-
 
 SAFE_METHODS = ('POST', 'HEAD', 'OPTIONS')
 
@@ -32,7 +33,7 @@ class UserViewSet(ModelViewSet):
     """
     queryset = IserviceUser.objects.all()
     serializer_class = UserSerializer
-    authentication_classes = (JSONWebTokenAuthentication, )
+    authentication_classes = (JSONWebTokenAuthentication,)
     permission_classes = (IsAuthenticatedOrCreate,)
 
 
@@ -48,7 +49,7 @@ class ServiceViewSet(ModelViewSet):
     """
     queryset = Service.objects.all()
     serializer_class = ServiceSerializer
-    authentication_classes = (JSONWebTokenAuthentication, )
+    authentication_classes = (JSONWebTokenAuthentication,)
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def create(self, request, *args, **kwargs):
@@ -82,3 +83,26 @@ class ServiceViewSet(ModelViewSet):
             return Service.objects.filter(city_db=city_db)
         else:
             return Service.objects.all()
+
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer,))
+def categories(request):
+    lista = [
+        "ALIMENTACAO",
+        "ANIMAIS",
+        "AULAS",
+        "AUTOMOTIVO",
+        "BELEZA_E_BEM_ESTAR",
+        "CASA_E_CONSTRUCAO",
+        "COMUNICACAO_E_ARTES",
+        "CONSULTORIA",
+        "DELIVERY",
+        "EVENTOS_E_MUSICA",
+        "SAUDE",
+        "TECNOLOGIA",
+        "TRANSPORTE",
+        "SEGURANCA",
+        "OUTROS"]
+
+    return Response(lista, status=status.HTTP_200_OK)

@@ -23,10 +23,12 @@ from IService_Server.iservice.views import LoginView
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'services', views.ServiceViewSet)
+from IService_Server.iservice.views import categories
 
 urlpatterns = [
     url(r'^login', LoginView.as_view(), name="login"),
     url(r'^', include(router.urls)),
     url(r'^admin/', admin.site.urls),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^categories', categories),
 ]
