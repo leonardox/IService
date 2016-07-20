@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-import ast
 
 from django.db import models
 from django.contrib.auth.models import User
@@ -36,8 +35,7 @@ class IserviceUser(User):
         user.save()
 
         if 'phone' in kwargs:
-            lista = ast.literal_eval(kwargs['phone'][0])
-            for phone_number in lista:
+            for phone_number in kwargs['phone']:
                 phone = PhoneNumber(phone=str(phone_number), user=user, service=None)
                 phone.save()
 

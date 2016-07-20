@@ -20,7 +20,7 @@ class TagSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['tag']
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     """
     This class serializes a user models.
     """
