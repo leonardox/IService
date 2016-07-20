@@ -1,4 +1,4 @@
-from models import IserviceUser, PhoneNumber, Tag, Service
+from models import IserviceUser, PhoneNumber, Tag, Service, State, City
 from rest_framework import serializers
 
 
@@ -50,16 +50,44 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         }
 
 
+class StateSerializer(serializers.ModelSerializer):
+    """
+    This class serializes a state.
+    """
+    class Meta:
+        model = State
+        fields = ('uf', 'name')
+
+
+class CitySerializer(serializers.ModelSerializer):
+    """
+    This class serializes a city.
+    """
+    class Meta:
+        model = City
+        fields = ('name', 'state')
+
+    def to_representation(self, instance):
+        return {
+            'name': instance.name,
+            'state': StateSerializer(instance.state).data
+        }
+
+
 class ServiceSerializer(serializers.ModelSerializer):
     """
     This class serializes a service
     """
     tags = serializers.ListField()
     phones = serializers.ListField()
+    city = serializers.CharField()
+    uf = serializers.CharField()
+    state = serializers.CharField()
 
     class Meta:
         model = Service
-        fields = ('name', 'description', 'tags', 'category', 'phones', 'user')
+        fields = ('name', 'description', 'tags', 'category', 'phones', 'user', 'city', 'uf',
+                  'state')
 
     def create(self, validated_data):
         """
@@ -81,5 +109,6 @@ class ServiceSerializer(serializers.ModelSerializer):
             'phones': phones,
             'category': instance.category,
             'tags': tags,
-            'user': UserSerializer(instance.user).data
+            'user': UserSerializer(instance.user).data,
+            'city': CitySerializer(instance.city_db).data
         }

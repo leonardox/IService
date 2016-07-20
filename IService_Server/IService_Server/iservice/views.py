@@ -5,9 +5,10 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework_jwt.views import ObtainJSONWebToken
-from IService_Server.iservice.models import IserviceUser, Service
+from IService_Server.iservice.models import IserviceUser, Service, City, State
 from IService_Server.iservice.serializers import UserSerializer, ServiceSerializer
-from rest_framework.permissions import BasePermission, IsAuthenticated
+from rest_framework.permissions import BasePermission, IsAuthenticatedOrReadOnly
+
 
 SAFE_METHODS = ('POST', 'HEAD', 'OPTIONS')
 
@@ -48,7 +49,7 @@ class ServiceViewSet(ModelViewSet):
     queryset = Service.objects.all()
     serializer_class = ServiceSerializer
     authentication_classes = (JSONWebTokenAuthentication, )
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def create(self, request, *args, **kwargs):
         data = copy(request.data)
@@ -58,3 +59,26 @@ class ServiceViewSet(ModelViewSet):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def get_queryset(self):
+        dic = self.request.query_params
+        query = {}
+
+        if 'city' in dic.keys() and 'state' in dic.keys():
+
+            try:
+                state_db = State.objects.get(uf=dic['state'].upper())
+            except State.DoesNotExist:
+                return None
+
+            query['name'] = dic['city']
+            query['state'] = state_db
+
+            try:
+                city_db = City.objects.get(**query)
+            except City.DoesNotExist:
+                return None
+
+            return Service.objects.filter(city_db=city_db)
+        else:
+            return Service.objects.all()

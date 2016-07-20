@@ -44,6 +44,22 @@ class IserviceUser(User):
         return user
 
 
+class State(models.Model):
+    """
+    This class represents a state.
+    """
+    uf = models.CharField(max_length=2)
+    name = models.CharField(max_length=20)
+
+
+class City(models.Model):
+    """
+    This class represents a city
+    """
+    name = models.CharField(max_length=50)
+    state = models.ForeignKey(State)
+
+
 class Service(models.Model):
     """
     This class represents a Iservice Service.
@@ -86,6 +102,7 @@ class Service(models.Model):
     description = models.CharField(max_length=140)
     user = models.ForeignKey(IserviceUser)
     category = models.CharField(max_length=60, choices=CATEGORIES)
+    city_db = models.ForeignKey(City)
 
     @staticmethod
     def create_service(**kwargs):
@@ -104,7 +121,19 @@ class Service(models.Model):
         if 'category' in kwargs:
             service.category = kwargs['category']
 
+        if 'city' in kwargs and 'state' in kwargs and 'uf' in kwargs:
+            try:
+                state_data = State.objects.get(name=kwargs['state'])
+            except State.DoesNotExist:
+                state_data = _save_new_state(kwargs['uf'], kwargs['state'])
+            try:
+                city_data = City.objects.get(name=kwargs['city'], state=state_data)
+                service.city_db = city_data
+            except City.DoesNotExist:
+                service.city_db = _save_new_city(state_data, kwargs['city'])
+
         service.save()
+
         if 'phones' in kwargs:
             for phone_number in kwargs['phones']:
                 try:
@@ -141,3 +170,21 @@ class Tag(models.Model):
     """
     tag = models.CharField(max_length=50)
     service = models.ForeignKey(Service, null=True)
+
+
+def _save_new_city(state, city):
+    """
+    This function adds a new city into database.
+    """
+    city = City(name=city, state=state)
+    city.save()
+    return city
+
+
+def _save_new_state(uf, state):
+    """
+    This function adds a new state into database.
+    """
+    state = State(uf=uf.upper(), name=state)
+    state.save()
+    return state
