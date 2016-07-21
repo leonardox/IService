@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import ast
+
 from django.db import models
 from django.contrib.auth.models import User
 from phonenumber_field.modelfields import PhoneNumberField
@@ -35,7 +37,8 @@ class IserviceUser(User):
         user.save()
 
         if 'phone' in kwargs:
-            for phone_number in kwargs['phone']:
+            lista = ast.literal_eval(kwargs['phone'][0])
+            for phone_number in lista:
                 phone = PhoneNumber(phone=str(phone_number), user=user, service=None)
                 phone.save()
 
@@ -134,15 +137,8 @@ class Service(models.Model):
 
         if 'phones' in kwargs:
             for phone_number in kwargs['phones']:
-                try:
-                    phone_db = PhoneNumber.objects.get(user=kwargs['user'])
-                except PhoneNumber.DoesNotExist:
-                    phone_db = None
-                if not phone_db:
-                    phone = PhoneNumber(phone=str(phone_number), user=None, service=service)
-                else:
-                    phone = phone_db
-                    phone.service = service
+                phone = PhoneNumber(phone=str(phone_number), user=None, service=service)
+                phone.service = service
                 phone.save()
 
         if 'tags' in kwargs:

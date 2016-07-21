@@ -39,7 +39,7 @@ class UserSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         phones = []
         for phone in instance.phonenumber_set.all():
-            phones.append(PhoneSerializer(phone).data)
+            phones.append(PhoneSerializer(phone).data['phone'])
 
         return {
             'id': instance.id,
@@ -99,9 +99,9 @@ class ServiceSerializer(serializers.ModelSerializer):
         phones = []
         tags = []
         for phone in instance.phonenumber_set.all():
-            phones.append(PhoneSerializer(phone).data)
+            phones.append(PhoneSerializer(phone).data['phone'])
         for tag in instance.tag_set.all():
-            tags.append(TagSerializer(tag).data)
+            tags.append(TagSerializer(tag).data['tag'])
 
         return {
             'name': instance.name,

@@ -33,8 +33,8 @@ class UserViewSet(ModelViewSet):
     """
     queryset = IserviceUser.objects.all()
     serializer_class = UserSerializer
-    authentication_classes = (JSONWebTokenAuthentication,)
-    permission_classes = (IsAuthenticatedOrCreate,)
+    #authentication_classes = (JSONWebTokenAuthentication,)
+    #permission_classes = (IsAuthenticatedOrCreate,)
 
 
 class LoginView(ObtainJSONWebToken):
