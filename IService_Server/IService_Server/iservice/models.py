@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import ast
-
 from django.db import models
 from django.contrib.auth.models import User
 from phonenumber_field.modelfields import PhoneNumberField
@@ -15,6 +13,13 @@ class IserviceUser(User):
 
     name = models.CharField(max_length=100)
     picture = models.CharField(null=True, max_length=150)
+    favorites_services = models.ManyToManyField('Service')
+
+    def add_favorite_service(self, service):
+        """
+        This functions adds a service into favorite list.
+        """
+        self.favorites_services.add(service)
 
     @staticmethod
     def create_user(**kwargs):

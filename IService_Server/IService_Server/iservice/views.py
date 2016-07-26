@@ -1,7 +1,7 @@
 from copy import copy
 
 from rest_framework import status
-from rest_framework.decorators import api_view, renderer_classes
+from rest_framework.decorators import api_view, renderer_classes, permission_classes
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -109,3 +109,22 @@ def categories(request):
         "OUTROS"]
 
     return Response(lista, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@renderer_classes((JSONRenderer,))
+def favorite_service(request):
+    """
+    This function adds a service into user authenticated favorite list.
+    """
+    data = request.query_params
+    print data
+    try:
+        user = IserviceUser.objects.get(pk=int(data['user']))
+        service = Service.objects.get(pk=int(data['service']))
+        user.add_favorite_service(service)
+        return Response({'message': 'Service added with succes'}, status=status.HTTP_200_OK)
+    except IserviceUser.DoesNotExist:
+        return Response({'message': 'User Not Found'}, status=status.HTTP_404_NOT_FOUND)
+    except Service.DoesNotExist:
+        return Response({'message': 'Service Not Found'}, status=status.HTTP_404_NOT_FOUND)
