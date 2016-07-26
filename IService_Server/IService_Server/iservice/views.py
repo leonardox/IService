@@ -1,7 +1,8 @@
 from copy import copy
 
+from django.utils.datastructures import MultiValueDictKeyError
 from rest_framework import status
-from rest_framework.decorators import api_view, renderer_classes, permission_classes
+from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -123,6 +124,9 @@ def favorite_service(request):
         service = Service.objects.get(pk=int(data['service']))
         user.add_favorite_service(service)
         return Response({'message': 'Service added with success'}, status=status.HTTP_200_OK)
+    except MultiValueDictKeyError:
+        return Response({'message': 'Invalid params'},
+                        status=status.HTTP_400_BAD_REQUEST)
     except IserviceUser.DoesNotExist:
         return Response({'message': 'User Not Found'}, status=status.HTTP_404_NOT_FOUND)
     except Service.DoesNotExist:
