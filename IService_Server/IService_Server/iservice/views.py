@@ -109,26 +109,3 @@ def categories(request):
         "OUTROS"]
 
     return Response(lista, status=status.HTTP_200_OK)
-
-
-@api_view(['GET'])
-@renderer_classes((JSONRenderer,))
-def categories(request):
-    lista = [
-        "ALIMENTACAO",
-        "ANIMAIS",
-        "AULAS",
-        "AUTOMOTIVO",
-        "BELEZA_E_BEM_ESTAR",
-        "CASA_E_CONSTRUCAO",
-        "COMUNICACAO_E_ARTES",
-        "CONSULTORIA",
-        "DELIVERY",
-        "EVENTOS_E_MUSICA",
-        "SAUDE",
-        "TECNOLOGIA",
-        "TRANSPORTE",
-        "SEGURANCA",
-        "OUTROS"]
-
-    return Response(lista, status=status.HTTP_200_OK)
