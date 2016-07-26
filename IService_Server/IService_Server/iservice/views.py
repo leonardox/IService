@@ -118,12 +118,11 @@ def favorite_service(request):
     This function adds a service into user authenticated favorite list.
     """
     data = request.query_params
-    print data
     try:
         user = IserviceUser.objects.get(pk=int(data['user']))
         service = Service.objects.get(pk=int(data['service']))
         user.add_favorite_service(service)
-        return Response({'message': 'Service added with succes'}, status=status.HTTP_200_OK)
+        return Response({'message': 'Service added with success'}, status=status.HTTP_200_OK)
     except IserviceUser.DoesNotExist:
         return Response({'message': 'User Not Found'}, status=status.HTTP_404_NOT_FOUND)
     except Service.DoesNotExist:
