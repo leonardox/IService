@@ -115,13 +115,13 @@ def categories(request):
     return Response(lista, status=status.HTTP_200_OK)
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 @renderer_classes((JSONRenderer,))
 def favorite_service(request):
     """
     This function adds a service into user authenticated favorite list.
     """
-    data = request.query_params
+    data = request.data
     try:
         user = IserviceUser.objects.get(pk=int(data['user']))
         service = Service.objects.get(pk=int(data['service']))
