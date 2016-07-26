@@ -85,6 +85,9 @@ class ServiceViewSet(ModelViewSet):
         elif 'self'in dic.keys():
             user = self.request.user
             return Service.objects.filter(user=user)
+        elif 'favorites' in dic.keys():
+            user = IserviceUser.objects.get(pk=self.request.user.pk)
+            return user.favorites_services
         else:
             return Service.objects.all()
 
