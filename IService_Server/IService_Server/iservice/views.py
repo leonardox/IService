@@ -37,6 +37,14 @@ class UserViewSet(ModelViewSet):
     authentication_classes = (JSONWebTokenAuthentication,)
     permission_classes = (IsAuthenticatedOrCreate,)
 
+    def get_queryset(self):
+        dic = self.request.query_params
+
+        if 'email' in dic.keys():
+            return IserviceUser.objects.filter(email=dic['email'])
+        else:
+            return IserviceUser.objects.all()
+
 
 class LoginView(ObtainJSONWebToken):
     """
