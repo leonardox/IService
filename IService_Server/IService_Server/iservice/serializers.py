@@ -104,6 +104,7 @@ class ServiceSerializer(serializers.ModelSerializer):
             tags.append(TagSerializer(tag).data['tag'])
 
         return {
+            'id': instance.id,
             'name': instance.name,
             'description': instance.description,
             'phones': phones,
