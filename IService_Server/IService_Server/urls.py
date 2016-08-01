@@ -18,12 +18,13 @@ from django.contrib import admin
 from rest_framework import routers
 
 from IService_Server.iservice import views
-from IService_Server.iservice.views import LoginView, favorite_service
+from IService_Server.iservice.views import LoginView, favorite_service, undo_favorite_service
+from IService_Server.iservice.views import categories
 
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'services', views.ServiceViewSet)
-from IService_Server.iservice.views import categories
+
 
 urlpatterns = [
     url(r'^login', LoginView.as_view(), name="login"),
@@ -32,4 +33,5 @@ urlpatterns = [
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^categories', categories),
     url(r'^favorite-service', favorite_service),
+    url(r'^undo-favorite-service', undo_favorite_service),
 ]

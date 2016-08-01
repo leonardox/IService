@@ -113,8 +113,6 @@ class ServiceViewSet(ModelViewSet):
             return Service.objects.all()
 
 
-
-
 @api_view(['GET'])
 @renderer_classes((JSONRenderer,))
 def categories(request):
@@ -150,6 +148,32 @@ def favorite_service(request):
         service = Service.objects.get(pk=int(data['service']))
         user.add_favorite_service(service)
         return Response({'message': 'Service added with success'}, status=status.HTTP_200_OK)
+    except MultiValueDictKeyError:
+        return Response({'message': 'Invalid params'},
+                        status=status.HTTP_400_BAD_REQUEST)
+    except IserviceUser.DoesNotExist:
+        return Response({'message': 'User Not Found'}, status=status.HTTP_404_NOT_FOUND)
+    except Service.DoesNotExist:
+        return Response({'message': 'Service Not Found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['POST'])
+@renderer_classes((JSONRenderer,))
+def undo_favorite_service(request):
+    """
+    This function adds a service into user authenticated favorite list.
+    """
+    data = request.data
+    try:
+        user = IserviceUser.objects.get(pk=int(data['user']))
+        service = Service.objects.get(pk=int(data['service']))
+
+        if service in user.favorites_services.all():
+            user.favorites_services.remove(service)
+            return Response({'message': 'Service removed with success'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'message': "Service isn't a favorite service"},
+                            status=status.HTTP_400_BAD_REQUEST)
     except MultiValueDictKeyError:
         return Response({'message': 'Invalid params'},
                         status=status.HTTP_400_BAD_REQUEST)
