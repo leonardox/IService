@@ -70,6 +70,19 @@ class ServiceViewSet(ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
+    def destroy(self, request, *args, **kwargs):
+        """
+        This method remove a service of an user.
+        """
+        user_services = Service.objects.filter(user=request.user)
+        instance = self.get_object()
+        if instance in user_services:
+            self.perform_destroy(instance)
+            return Response({'message': 'Service was removed with success.'},
+                            status=status.HTTP_204_NO_CONTENT)
+        return Response({'message': "Service not found on user's services."},
+                        status=status.HTTP_400_BAD_REQUEST)
+
     def get_queryset(self):
         dic = self.request.query_params
         query = {}
@@ -98,6 +111,8 @@ class ServiceViewSet(ModelViewSet):
             return user.favorites_services
         else:
             return Service.objects.all()
+
+
 
 
 @api_view(['GET'])
