@@ -37,16 +37,23 @@ class UserSerializer(serializers.ModelSerializer):
         return IserviceUser.create_user(**validated_data)
 
     def to_representation(self, instance):
+
         phones = []
+        favorites = []
+
         for phone in instance.phonenumber_set.all():
             phones.append(PhoneSerializer(phone).data['phone'])
+
+        for service in instance.favorites_services.all():
+            favorites.append(service.id)
 
         return {
             'id': instance.id,
             'name': instance.name,
             'email': instance.email,
             'phone': phones,
-            'picture': instance.picture
+            'picture': instance.picture,
+            "favorite_services": favorites
         }
 
 
