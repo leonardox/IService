@@ -53,7 +53,7 @@ class UserSerializer(serializers.ModelSerializer):
             'email': instance.email,
             'phone': phones,
             'picture': instance.picture,
-            "favorite_services": favorites
+            "favorites": favorites
         }
 
 
