@@ -104,7 +104,7 @@ class Service(models.Model):
     )
 
     name = models.CharField(max_length=60)
-    description = models.CharField(max_length=140)
+    description = models.CharField(max_length=1000)
     user = models.ForeignKey(IserviceUser)
     category = models.CharField(max_length=60, choices=CATEGORIES)
     city_db = models.ForeignKey(City)
