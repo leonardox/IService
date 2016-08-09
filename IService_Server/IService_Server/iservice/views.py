@@ -8,7 +8,8 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework_jwt.views import ObtainJSONWebToken
-from IService_Server.iservice.models import IserviceUser, Service, City, State
+from IService_Server.iservice.models import IserviceUser, Service, City, State, _save_new_state, \
+    _save_new_city, PhoneNumber, Tag
 from IService_Server.iservice.serializers import UserSerializer, ServiceSerializer
 from rest_framework.permissions import BasePermission, IsAuthenticatedOrReadOnly
 
@@ -82,6 +83,55 @@ class ServiceViewSet(ModelViewSet):
                             status=status.HTTP_204_NO_CONTENT)
         return Response({'message': "Service not found on user's services."},
                         status=status.HTTP_400_BAD_REQUEST)
+
+    def update(self, request, *args, **kwargs):
+        """
+        This method updates a service.
+        """
+        service = self.get_object()
+        data = request.data
+
+        if service.user.email != request.user.email:
+            return Response({'message': 'Access Denied!'}, status=status.HTTP_403_FORBIDDEN)
+
+        if 'name' in data:
+            service.name = data['name']
+
+        if 'description' in data:
+            service.description = data['description']
+
+        if 'category' in data:
+            service.category = data['category']
+
+        if 'city' in data and 'state' in data and 'uf' in data:
+            try:
+                state_data = State.objects.get(name=data['state'])
+            except State.DoesNotExist:
+                state_data = _save_new_state(data['uf'], data['state'])
+            try:
+                city_data = City.objects.get(name=data['city'], state=state_data)
+                service.city_db = city_data
+            except City.DoesNotExist:
+                service.city_db = _save_new_city(state_data, data['city'])
+
+        service.save()
+
+        if 'phones' in data:
+            PhoneNumber.objects.filter(service=service).delete()
+            for phone_number in data['phones']:
+                phone = PhoneNumber(phone=str(phone_number), user=None, service=service)
+                phone.service = service
+                phone.save()
+
+        if 'tags' in data:
+            Tag.objects.filter(service=service).delete()
+            for tag in data['tags']:
+                tag_db = Tag(tag=tag, service=service)
+                tag_db.save()
+
+        serializer = self.get_serializer(service)
+
+        return Response(serializer.data)
 
     def get_queryset(self):
         dic = self.request.query_params
