@@ -226,7 +226,6 @@ class EvaluationViewSet(ModelViewSet):
             except IserviceUser.DoesNotExist:
                 return None
             query['user'] = user
-            return user.favorites_services
 
         if 'self' in dic.keys():
             user = self.request.user
