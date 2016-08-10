@@ -110,6 +110,11 @@ class ServiceSerializer(serializers.ModelSerializer):
         for tag in instance.tag_set.all():
             tags.append(TagSerializer(tag).data['tag'])
 
+        avg = 0.0
+        evaluations = Evaluation.objects.filter(service=instance)
+        for evaluation in evaluations:
+            avg += evaluation.note
+
         return {
             'id': instance.id,
             'name': instance.name,
@@ -118,7 +123,8 @@ class ServiceSerializer(serializers.ModelSerializer):
             'category': instance.category,
             'tags': tags,
             'user': UserSerializer(instance.user).data,
-            'city': CitySerializer(instance.city_db).data
+            'city': CitySerializer(instance.city_db).data,
+            'average': avg
         }
 
 
