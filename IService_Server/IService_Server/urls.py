@@ -24,6 +24,7 @@ from IService_Server.iservice.views import categories
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'services', views.ServiceViewSet)
+router.register(r'evaluation', views.EvaluationViewSet)
 
 
 urlpatterns = [

@@ -9,9 +9,10 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework_jwt.views import ObtainJSONWebToken
 from IService_Server.iservice.models import IserviceUser, Service, City, State, _save_new_state, \
-    _save_new_city, PhoneNumber, Tag
-from IService_Server.iservice.serializers import UserSerializer, ServiceSerializer
-from rest_framework.permissions import BasePermission, IsAuthenticatedOrReadOnly
+    _save_new_city, PhoneNumber, Tag, Evaluation
+from IService_Server.iservice.serializers import UserSerializer, ServiceSerializer, \
+    EvaluationSerializer
+from rest_framework.permissions import BasePermission, IsAuthenticatedOrReadOnly, IsAuthenticated
 
 SAFE_METHODS = ('POST', 'HEAD', 'OPTIONS')
 
@@ -161,6 +162,80 @@ class ServiceViewSet(ModelViewSet):
             return user.favorites_services
         else:
             return Service.objects.all()
+
+
+class EvaluationViewSet(ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = Evaluation.objects.all()
+    serializer_class = EvaluationSerializer
+    authentication_classes = (JSONWebTokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def create(self, request, *args, **kwargs):
+        """
+        This fuction adds a service evaluation.
+        """
+        data = copy(request.data)
+        data[u'user'] = request.user
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def update(self, request, *args, **kwargs):
+        """
+        This function updates an evaluation.
+        """
+        evaluation = self.get_object()
+        data = request.data
+
+        if evaluation.user.email != request.user.email:
+            return Response({'message': 'Access Denied!'}, status=status.HTTP_403_FORBIDDEN)
+
+        if 'comment' in data:
+            evaluation.comment = data['comment']
+
+        if 'note' in data:
+            evaluation.note = data['note']
+
+        evaluation.save()
+
+    def get_queryset(self):
+        """
+        This function search for a specific evaluation or a evaluation list.
+        """
+        dic = self.request.query_params
+        query = {}
+
+        if 'service' in dic.keys():
+
+            try:
+                service = Service.objects.get(id=dic['service'])
+            except Service.DoesNotExist:
+                return None
+
+            query['service'] = service
+
+        if 'user' in dic.keys():
+
+            try:
+                user = IserviceUser.objects.get(id=dic['user'])
+            except IserviceUser.DoesNotExist:
+                return None
+            query['user'] = user
+            return user.favorites_services
+
+        if 'self' in dic.keys():
+            user = self.request.user
+            query['user'] = user
+
+        if query:
+            return Evaluation.objects.filter(**query)
+        else:
+            return Evaluation.objects.all()
 
 
 @api_view(['GET'])

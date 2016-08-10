@@ -170,6 +170,16 @@ class Tag(models.Model):
     service = models.ForeignKey(Service, null=True)
 
 
+class Evaluation(models.Model):
+    """
+    This class is an evaluation of a service.
+    """
+    user = models.ForeignKey(IserviceUser)
+    service = models.ForeignKey(Service)
+    note = models.FloatField()
+    comment = models.CharField(max_length=200)
+
+
 def _save_new_city(state, city):
     """
     This function adds a new city into database.

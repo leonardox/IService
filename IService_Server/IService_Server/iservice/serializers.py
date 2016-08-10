@@ -1,4 +1,4 @@
-from models import IserviceUser, PhoneNumber, Tag, Service, State, City
+from models import IserviceUser, PhoneNumber, Tag, Service, State, City, Evaluation
 from rest_framework import serializers
 
 
@@ -120,3 +120,12 @@ class ServiceSerializer(serializers.ModelSerializer):
             'user': UserSerializer(instance.user).data,
             'city': CitySerializer(instance.city_db).data
         }
+
+
+class EvaluationSerializer(serializers.ModelSerializer):
+    """
+    This class serializes a city.
+    """
+    class Meta:
+        model = Evaluation
+        fields = ('id', 'user', 'service', 'note', 'comment')
