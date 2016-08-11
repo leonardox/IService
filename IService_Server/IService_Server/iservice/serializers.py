@@ -115,7 +115,8 @@ class ServiceSerializer(serializers.ModelSerializer):
         for evaluation in evaluations:
             avg += evaluation.note
 
-        avg = (avg / len(evaluations))
+        if evaluations:
+            avg = (avg / len(evaluations))
 
         return {
             'id': instance.id,
