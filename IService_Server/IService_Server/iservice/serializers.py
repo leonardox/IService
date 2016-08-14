@@ -137,4 +137,4 @@ class EvaluationSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Evaluation
-        fields = ('id', 'user', 'service', 'note', 'comment')
+        fields = ('id', 'user', 'service', 'note', 'title', 'description')

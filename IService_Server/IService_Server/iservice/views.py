@@ -195,8 +195,11 @@ class EvaluationViewSet(ModelViewSet):
         if evaluation.user.email != request.user.email:
             return Response({'message': 'Access Denied!'}, status=status.HTTP_403_FORBIDDEN)
 
-        if 'comment' in data:
-            evaluation.comment = data['comment']
+        if 'title' in data:
+            evaluation.title = data['title']
+
+        if 'description' in data:
+            evaluation.description = data['description']
 
         if 'note' in data:
             evaluation.note = data['note']

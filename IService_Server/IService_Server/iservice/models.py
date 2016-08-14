@@ -177,7 +177,8 @@ class Evaluation(models.Model):
     user = models.ForeignKey(IserviceUser)
     service = models.ForeignKey(Service)
     note = models.FloatField()
-    comment = models.CharField(max_length=200)
+    description = models.CharField(max_length=200, blank=True)
+    title = models.CharField(max_length=100, blank=True)
 
 
 def _save_new_city(state, city):
