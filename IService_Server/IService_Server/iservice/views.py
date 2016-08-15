@@ -174,7 +174,7 @@ class EvaluationViewSet(ModelViewSet):
     queryset = Evaluation.objects.all()
     serializer_class = EvaluationSerializer
     authentication_classes = (JSONWebTokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def create(self, request, *args, **kwargs):
         """
