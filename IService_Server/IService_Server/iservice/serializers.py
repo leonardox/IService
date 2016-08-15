@@ -94,7 +94,7 @@ class ServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Service
         fields = ('name', 'description', 'tags', 'category', 'phones', 'user', 'city', 'uf',
-                  'state')
+                  'state','email')
 
     def create(self, validated_data):
         """
@@ -123,6 +123,7 @@ class ServiceSerializer(serializers.ModelSerializer):
             'name': instance.name,
             'description': instance.description,
             'phones': phones,
+            'email': instance.email,
             'category': instance.category,
             'tags': tags,
             'user': UserSerializer(instance.user).data,
