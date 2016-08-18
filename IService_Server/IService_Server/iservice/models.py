@@ -108,6 +108,7 @@ class Service(models.Model):
     name = models.CharField(max_length=60)
     description = models.CharField(max_length=1000)
     user = models.ForeignKey(IserviceUser)
+    email = models.EmailField(blank=True)
     category = models.CharField(max_length=60, choices=CATEGORIES)
     city_db = models.ForeignKey(City)
 
@@ -123,6 +124,8 @@ class Service(models.Model):
             service.name = kwargs['name']
         if 'description' in kwargs:
             service.description = kwargs['description']
+        if 'email' in kwargs:
+            service.email = kwargs['email']
         if 'user' in kwargs:
             service.user = kwargs['user']
         if 'category' in kwargs:

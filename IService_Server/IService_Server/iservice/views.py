@@ -104,6 +104,9 @@ class ServiceViewSet(ModelViewSet):
         if 'category' in data:
             service.category = data['category']
 
+        if 'email' in data:
+            service.email = data['email']
+
         if 'city' in data and 'state' in data and 'uf' in data:
             try:
                 state_data = State.objects.get(name=data['state'])
@@ -171,7 +174,7 @@ class EvaluationViewSet(ModelViewSet):
     queryset = Evaluation.objects.all()
     serializer_class = EvaluationSerializer
     authentication_classes = (JSONWebTokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def create(self, request, *args, **kwargs):
         """
