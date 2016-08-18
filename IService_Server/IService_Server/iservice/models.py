@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from datetime import datetime
+
 from django.db import models
 from django.contrib.auth.models import User
 from phonenumber_field.modelfields import PhoneNumberField
@@ -179,6 +181,7 @@ class Evaluation(models.Model):
     note = models.FloatField()
     description = models.CharField(max_length=200, blank=True)
     title = models.CharField(max_length=100, blank=True)
+    date = models.DateField(auto_now_add=True, blank=True)
 
 
 def _save_new_city(state, city):

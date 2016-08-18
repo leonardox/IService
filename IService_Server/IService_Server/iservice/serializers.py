@@ -137,4 +137,16 @@ class EvaluationSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Evaluation
-        fields = ('id', 'user', 'service', 'note', 'title', 'description')
+        fields = ('id', 'user', 'service', 'note', 'title', 'description', 'date')
+
+    def to_representation(self, instance):
+
+        return {
+            'id': instance.id,
+            'title': instance.title,
+            'description': instance.description,
+            'note': instance.note,
+            'service': instance.service.id,
+            'user': UserSerializer(instance.user).data,
+            'date': instance.date
+        }
