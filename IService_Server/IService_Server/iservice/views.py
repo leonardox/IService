@@ -194,6 +194,7 @@ class EvaluationViewSet(ModelViewSet):
         """
         evaluation = self.get_object()
         data = request.data
+        print data
 
         if evaluation.user.email != request.user.email:
             return Response({'message': 'Access Denied!'}, status=status.HTTP_403_FORBIDDEN)
@@ -208,6 +209,8 @@ class EvaluationViewSet(ModelViewSet):
             evaluation.note = data['note']
 
         evaluation.save()
+
+        return evaluation
 
     def get_queryset(self):
         """
