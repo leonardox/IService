@@ -210,7 +210,7 @@ class EvaluationViewSet(ModelViewSet):
 
         evaluation.save()
 
-        return evaluation
+        return Response(EvaluationSerializer(evaluation), status=status.HTTP_200_OK)
 
     def get_queryset(self):
         """
