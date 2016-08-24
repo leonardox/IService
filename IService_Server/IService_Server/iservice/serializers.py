@@ -87,7 +87,7 @@ class ServicePictureSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = ServicePicture
-        fields = 'address'
+        fields = ('address', 'id')
 
 
 class ServiceSerializer(serializers.ModelSerializer):
