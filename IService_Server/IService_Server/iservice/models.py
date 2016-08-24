@@ -155,6 +155,11 @@ class Service(models.Model):
                 tag_db = Tag(tag=tag, service=service)
                 tag_db.save()
 
+        if 'pictures' in kwargs:
+            for picture in kwargs['pictures']:
+                picture_db = ServicePicture(address=picture, service=service)
+                picture_db.save()
+
         return service
 
 
@@ -185,6 +190,14 @@ class Evaluation(models.Model):
     description = models.CharField(max_length=200, blank=True)
     title = models.CharField(max_length=100, blank=True)
     date = models.DateField(auto_now_add=True, blank=True)
+
+
+class ServicePicture(models.Model):
+    """
+    This class represents a service picture.
+    """
+    address = models.CharField(max_length=300)
+    service = models.ForeignKey(Service, null=True)
 
 
 def _save_new_city(state, city):

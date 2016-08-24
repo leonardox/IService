@@ -1,4 +1,4 @@
-from models import IserviceUser, PhoneNumber, Tag, Service, State, City, Evaluation
+from models import IserviceUser, PhoneNumber, Tag, Service, State, City, Evaluation, ServicePicture
 from rest_framework import serializers
 
 
@@ -81,6 +81,15 @@ class CitySerializer(serializers.ModelSerializer):
         }
 
 
+class ServicePictureSerializer(serializers.ModelSerializer):
+    """
+    This class serializes a picture.
+    """
+    class Meta:
+        model = ServicePicture
+        fields = 'address'
+
+
 class ServiceSerializer(serializers.ModelSerializer):
     """
     This class serializes a service
@@ -90,11 +99,12 @@ class ServiceSerializer(serializers.ModelSerializer):
     city = serializers.CharField()
     uf = serializers.CharField()
     state = serializers.CharField()
+    pictures = serializers.ListField()
 
     class Meta:
         model = Service
         fields = ('name', 'description', 'tags', 'category', 'phones', 'user', 'city', 'uf',
-                  'state','email')
+                  'state','email', 'pictures')
 
     def create(self, validated_data):
         """
@@ -105,6 +115,8 @@ class ServiceSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         phones = []
         tags = []
+        pictures = []
+
         for phone in instance.phonenumber_set.all():
             phones.append(PhoneSerializer(phone).data['phone'])
         for tag in instance.tag_set.all():
@@ -118,6 +130,9 @@ class ServiceSerializer(serializers.ModelSerializer):
         if evaluations:
             avg = (avg / len(evaluations))
 
+        for picture in instance.servicepicture_set.all():
+            pictures.append(ServicePictureSerializer(picture).data['address'])
+
         return {
             'id': instance.id,
             'name': instance.name,
@@ -126,6 +141,7 @@ class ServiceSerializer(serializers.ModelSerializer):
             'email': instance.email,
             'category': instance.category,
             'tags': tags,
+            'pictures': pictures,
             'user': UserSerializer(instance.user).data,
             'city': CitySerializer(instance.city_db).data,
             'average': avg
