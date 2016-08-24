@@ -9,7 +9,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework_jwt.views import ObtainJSONWebToken
 from IService_Server.iservice.models import IserviceUser, Service, City, State, _save_new_state, \
-    _save_new_city, PhoneNumber, Tag, Evaluation
+    _save_new_city, PhoneNumber, Tag, Evaluation, ServicePicture
 from IService_Server.iservice.serializers import UserSerializer, ServiceSerializer, \
     EvaluationSerializer
 from rest_framework.permissions import BasePermission, IsAuthenticatedOrReadOnly, IsAuthenticated
@@ -132,6 +132,12 @@ class ServiceViewSet(ModelViewSet):
             for tag in data['tags']:
                 tag_db = Tag(tag=tag, service=service)
                 tag_db.save()
+
+        if 'pictures' in data:
+            ServicePicture.objects.filter(service=service).delete()
+            for picture in data['pictures']:
+                picture_db = ServicePicture(address=picture, service=service)
+                picture_db.save()
 
         serializer = self.get_serializer(service)
 
