@@ -286,9 +286,9 @@ def get_recommendation(request):
     services = []
     for contact in contacts:
         try:
-            users = PhoneNumber.objects.filter(phone=contact).user
+            users = PhoneNumber.objects.filter(phone=contact)
             for user in users:
-                service = Evaluation.objects.get(user=user).service
+                service = Evaluation.objects.get(user=user.user).service
                 service_db = Service.objects.get(service=service)
                 services.append(ServiceSerializer(service_db).data)
         except PhoneNumber.DoesNotExist:
