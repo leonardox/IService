@@ -284,6 +284,7 @@ def get_recommendation(request):
     data = request.data
     contacts = mount_contacts(data['contacts'])
     services = []
+    services_ids = []
     for contact in contacts:
         try:
             phones = PhoneNumber.objects.filter(phone=contact)
@@ -291,7 +292,9 @@ def get_recommendation(request):
                 evaluations = Evaluation.objects.filter(user=phone.user)
                 for evaluation in evaluations:
                     service_db = Service.objects.get(id=evaluation.service.id)
-                    services.append(ServiceSerializer(service_db).data)
+                    if service_db.id not in services_ids:
+                        services.append(ServiceSerializer(service_db).data)
+                        services_ids.append(service_db.id)
         except PhoneNumber.DoesNotExist:
             continue
         except Evaluation.DoesNotExist:
