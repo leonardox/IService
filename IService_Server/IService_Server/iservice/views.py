@@ -39,6 +39,40 @@ class UserViewSet(ModelViewSet):
     authentication_classes = (JSONWebTokenAuthentication,)
     permission_classes = (IsAuthenticatedOrCreate,)
 
+    def update(self, request, *args, **kwargs):
+        """
+        This method updates a service.
+        """
+        user = self.get_object()
+        data = request.data
+
+        if user.email != request.user.email:
+            return Response({'message': 'Access Denied!'}, status=status.HTTP_403_FORBIDDEN)
+
+        if 'name' in data:
+            user.name = data['name']
+
+        if 'email' in data:
+            user.email = data['email']
+
+        if 'password' in data:
+            user.set_password(data['password'])
+
+        if 'picture' in data:
+            user.picture = data['picture']
+
+        user.save()
+
+        if 'phones' in data:
+            PhoneNumber.objects.filter(user=user).delete()
+            for phone_number in data['phones']:
+                phone = PhoneNumber(phone=str(phone_number), user=user, service=None)
+                phone.save()
+
+        serializer = self.get_serializer(user)
+
+        return Response(serializer.data)
+
     def get_queryset(self):
         dic = self.request.query_params
 
