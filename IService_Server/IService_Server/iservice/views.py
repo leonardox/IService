@@ -277,6 +277,31 @@ def categories(request):
 
 @api_view(['POST'])
 @renderer_classes((JSONRenderer,))
+def get_recommendation(request):
+    """
+    This function retrieves a service list of contacts evaluation's.
+    """
+    data = request.data
+    contacts = mount_contacts(data['contacts'])
+    services = []
+    for contact in contacts:
+        try:
+            user = PhoneNumber.objects.get(phone=contact).user
+            service = Evaluation.objects.get(user=user).service
+            service_db = Service.objects.get(service=service)
+            services.append(ServiceSerializer(service_db).data)
+        except PhoneNumber.DoesNotExist:
+            continue
+        except Evaluation.DoesNotExist:
+            continue
+
+    dict = {}
+    dict['services'] = services
+    return Response(dict, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@renderer_classes((JSONRenderer,))
 def favorite_service(request):
     """
     This function adds a service into user authenticated favorite list.
@@ -320,3 +345,28 @@ def undo_favorite_service(request):
         return Response({'message': 'User Not Found'}, status=status.HTTP_404_NOT_FOUND)
     except Service.DoesNotExist:
         return Response({'message': 'Service Not Found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+def mount_contacts(contacts):
+    """
+    This function manages the user contact list to a default django contact list.
+    :param contacts: User's contacts
+    :return: Django contact list.
+    """
+    django_contacts = []
+    for contact in contacts:
+        length = len(contact)
+        if length == 9:
+            django_contacts.append("+5583" + contacts)
+        elif length == 8:
+            django_contacts.append("+55839" + contacts)
+        elif length == 11:
+            django_contacts.append("+55" + contacts)
+        else:
+            default = ""
+            point = -1
+            for i in xrange(11):
+                default = contact[point] + default
+                point -= 1
+            django_contacts.append("+55" + default)
+    return django_contacts
