@@ -290,7 +290,7 @@ def get_recommendation(request):
             for phone in phones:
                 evaluations = Evaluation.objects.filter(user=phone.user)
                 for evaluation in evaluations:
-                    service_db = Service.objects.get(service=evaluation.service)
+                    service_db = Service.objects.get(id=evaluation.service)
                     services.append(ServiceSerializer(service_db).data)
         except PhoneNumber.DoesNotExist:
             continue
