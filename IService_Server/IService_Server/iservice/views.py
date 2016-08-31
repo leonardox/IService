@@ -362,11 +362,11 @@ def mount_contacts(contacts):
     for contact in contacts:
         length = len(contact)
         if length == 9:
-            django_contacts.append("+5583" + contacts)
+            django_contacts.append("+5583" + contact)
         elif length == 8:
-            django_contacts.append("+55839" + contacts)
+            django_contacts.append("+55839" + contact)
         elif length == 11:
-            django_contacts.append("+55" + contacts)
+            django_contacts.append("+55" + contact)
         else:
             default = ""
             point = -1
