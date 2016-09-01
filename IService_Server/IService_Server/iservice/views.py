@@ -62,7 +62,7 @@ class UserViewSet(ModelViewSet):
 
         if 'phone' in data:
             PhoneNumber.objects.filter(user=user).delete()
-            for phone_number in data['phones']:
+            for phone_number in data['phone']:
                 phone = PhoneNumber(phone=str(phone_number), user=user, service=None)
                 phone.save()
 
