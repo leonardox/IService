@@ -52,9 +52,6 @@ class UserViewSet(ModelViewSet):
         if 'name' in data:
             user.name = data['name']
 
-        if 'email' in data:
-            user.email = data['email']
-
         if 'password' in data:
             user.set_password(data['password'])
 
@@ -63,7 +60,7 @@ class UserViewSet(ModelViewSet):
 
         user.save()
 
-        if 'phones' in data:
+        if 'phone' in data:
             PhoneNumber.objects.filter(user=user).delete()
             for phone_number in data['phones']:
                 phone = PhoneNumber(phone=str(phone_number), user=user, service=None)
