@@ -331,9 +331,7 @@ def get_recommendation(request):
         except Evaluation.DoesNotExist:
             continue
 
-    dict = {}
-    dict['services'] = services
-    return Response(dict, status=status.HTTP_200_OK)
+    return Response(services, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
