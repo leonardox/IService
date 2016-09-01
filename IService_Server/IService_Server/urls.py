@@ -18,6 +18,7 @@ from django.contrib import admin
 from rest_framework import routers
 
 from IService_Server.iservice import views
+from IService_Server.iservice.utils import clean_table
 from IService_Server.iservice.views import LoginView, favorite_service, undo_favorite_service,\
     get_recommendation
 from IService_Server.iservice.views import categories
@@ -37,4 +38,5 @@ urlpatterns = [
     url(r'^favorite-service', favorite_service),
     url(r'^undo-favorite-service', undo_favorite_service),
     url(r'^recommendation', get_recommendation),
+    url(r'^admin/clean-table/', clean_table),
 ]
