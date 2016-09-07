@@ -52,8 +52,16 @@ class UserViewSet(ModelViewSet):
         if 'name' in data:
             user.name = data['name']
 
-        if 'password' in data:
-            user.set_password(data['password'])
+        if 'oldPassword' in data:
+            if user.check_password(data['oldPassword']):
+                if 'newPassword' in data:
+                    user.set_password(data['newPassword'])
+                else:
+                    return Response({'message': "New Password not found."},
+                        status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({'message': "Old Password doesn't match."},
+                        status=status.HTTP_400_BAD_REQUEST)
 
         if 'picture' in data:
             user.picture = data['picture']
