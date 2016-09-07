@@ -78,6 +78,17 @@ class UserViewSet(ModelViewSet):
 
         return Response(serializer.data)
 
+    def destroy(self, request, *args, **kwargs):
+        """
+        This method remove a service of an user.
+        """
+        instance = self.get_object()
+        if instance.email == request.user.email:
+            self.perform_destroy(instance)
+            return Response({'message': 'User was removed with success.'},
+                            status=status.HTTP_204_NO_CONTENT)
+        return Response({'message': 'Access Denied!'}, status=status.HTTP_403_FORBIDDEN)
+
     def get_queryset(self):
         dic = self.request.query_params
 
