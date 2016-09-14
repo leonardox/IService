@@ -99,11 +99,12 @@ class ServiceSerializer(serializers.ModelSerializer):
     city = serializers.CharField()
     uf = serializers.CharField()
     state = serializers.CharField()
+    pictures = serializers.ListField(required=False, allow_blank=True)
 
     class Meta:
         model = Service
         fields = ('name', 'description', 'tags', 'category', 'phones', 'user', 'city', 'uf',
-                  'state', 'email')
+                  'state', 'email', 'pictures')
 
     def create(self, validated_data):
         """
