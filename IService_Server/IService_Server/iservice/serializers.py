@@ -99,7 +99,7 @@ class ServiceSerializer(serializers.ModelSerializer):
     city = serializers.CharField()
     uf = serializers.CharField()
     state = serializers.CharField()
-    pictures = serializers.ListField(required=False, allow_blank=True)
+    pictures = serializers.ListField(required=False, allow_empty=True)
 
     class Meta:
         model = Service
