@@ -110,6 +110,7 @@ class Service(models.Model):
     user = models.ForeignKey(IserviceUser)
     email = models.EmailField(blank=True)
     category = models.CharField(max_length=60, choices=CATEGORIES)
+    whatsapp = models.CharField(max_length=20, blank=True)
     city_db = models.ForeignKey(City)
 
     @staticmethod
@@ -130,6 +131,8 @@ class Service(models.Model):
             service.user = kwargs['user']
         if 'category' in kwargs:
             service.category = kwargs['category']
+        if 'whatsapp' in kwargs:
+            service.whatsapp = kwargs['whatsapp']
 
         if 'city' in kwargs and 'state' in kwargs and 'uf' in kwargs:
             try:

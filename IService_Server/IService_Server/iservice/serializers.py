@@ -104,7 +104,7 @@ class ServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Service
         fields = ('name', 'description', 'tags', 'category', 'phones', 'user', 'city', 'uf',
-                  'state', 'email', 'pictures')
+                  'state', 'email', 'pictures', 'whatsapp')
 
     def create(self, validated_data):
         """
@@ -144,7 +144,8 @@ class ServiceSerializer(serializers.ModelSerializer):
             'pictures': pictures,
             'user': UserSerializer(instance.user).data,
             'city': CitySerializer(instance.city_db).data,
-            'average': avg
+            'average': avg,
+            'whatsapp': instance.whatsapp
         }
 
 

@@ -157,6 +157,9 @@ class ServiceViewSet(ModelViewSet):
         if 'email' in data:
             service.email = data['email']
 
+        if 'whatsapp' in data:
+            service.whatsapp = data['whatsapp']
+
         if 'city' in data and 'state' in data and 'uf' in data:
             try:
                 state_data = State.objects.get(name=data['state'])
