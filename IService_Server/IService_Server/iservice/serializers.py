@@ -104,7 +104,7 @@ class ServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Service
         fields = ('name', 'description', 'tags', 'category', 'phones', 'user', 'city', 'uf',
-                  'state','email', 'pictures')
+                  'state', 'email')
 
     def create(self, validated_data):
         """
