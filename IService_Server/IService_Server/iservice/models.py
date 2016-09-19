@@ -111,6 +111,8 @@ class Service(models.Model):
     email = models.EmailField(blank=True)
     category = models.CharField(max_length=60, choices=CATEGORIES)
     whatsapp = models.CharField(max_length=20, blank=True)
+    latitude = models.CharField(max_length=50, blank=True)
+    longitude = models.CharField(max_length=50, blank=True)
     city_db = models.ForeignKey(City)
 
     @staticmethod
@@ -133,6 +135,10 @@ class Service(models.Model):
             service.category = kwargs['category']
         if 'whatsapp' in kwargs:
             service.whatsapp = kwargs['whatsapp']
+        if 'latitude' in kwargs:
+            service.latitude = kwargs['latitude']
+        if 'longitude' in kwargs:
+            service.longitude = kwargs['longitude']
 
         if 'city' in kwargs and 'state' in kwargs and 'uf' in kwargs:
             try:

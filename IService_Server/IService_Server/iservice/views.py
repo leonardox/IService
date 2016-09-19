@@ -160,6 +160,12 @@ class ServiceViewSet(ModelViewSet):
         if 'whatsapp' in data:
             service.whatsapp = data['whatsapp']
 
+        if 'latitude' in data:
+            service.latitude = data['latitude']
+
+        if 'longitude' in data:
+            service.longitude = data['longitude']
+
         if 'city' in data and 'state' in data and 'uf' in data:
             try:
                 state_data = State.objects.get(name=data['state'])
