@@ -111,8 +111,8 @@ class Service(models.Model):
     email = models.EmailField(blank=True)
     category = models.CharField(max_length=60, choices=CATEGORIES)
     whatsapp = models.CharField(max_length=20, blank=True)
-    latitude = models.CharField(max_length=50, blank=True)
-    longitude = models.CharField(max_length=50, blank=True)
+    latitude = models.FloatField(blank=True)
+    longitude = models.FloatField(blank=True)
     city_db = models.ForeignKey(City)
 
     @staticmethod
