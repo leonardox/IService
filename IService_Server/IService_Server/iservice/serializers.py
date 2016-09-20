@@ -145,7 +145,9 @@ class ServiceSerializer(serializers.ModelSerializer):
             'user': UserSerializer(instance.user).data,
             'city': CitySerializer(instance.city_db).data,
             'average': avg,
-            'whatsapp': instance.whatsapp
+            'whatsapp': instance.whatsapp,
+            'latitude': instance.latitude,
+            'longitude': instance.longitude
         }
 
 
